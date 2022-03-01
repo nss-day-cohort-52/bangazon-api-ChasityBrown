@@ -7,7 +7,7 @@ class Product(models.Model):
     store = models.ForeignKey(
         "Store", on_delete=models.CASCADE, related_name='products')
     price = models.FloatField(validators=[
-        MinValueValidator(0.00), MaxValueValidator(10000.00)])
+        MinValueValidator(0.00), MaxValueValidator(17500.00)])
     description = models.TextField()
     quantity = models.IntegerField()
     location = models.CharField(max_length=100)
@@ -27,12 +27,11 @@ class Product(models.Model):
             number -- The average rating for the product
         """
         # TODO: Fix Divide by zero error
-
-        total_rating = 0
-        for rating in self.ratings.all():
-            total_rating += rating.score
-
-        avg = total_rating / self.ratings.count()
+        if self.rating.count() is not None:
+            total_rating = 0
+            for rating in self.rating.all():
+                total_rating += rating.score
+                avg = total_rating / self.rating.count()
         return avg
 
     @property

@@ -12,7 +12,6 @@ from bangazon_api.serializers.message_serializer import MessageSerializer
 
 
 class OrderView(ViewSet):
-
     @swagger_auto_schema(responses={
         200: openapi.Response(
             description="The list of orders for the current user",
@@ -65,6 +64,7 @@ class OrderView(ViewSet):
                 pk=request.data['paymentTypeId'], customer=request.auth.user)
             order.payment_type = payment_type
             order.completed_on = datetime.now()
+            order.save()
             return Response({'message': "Order Completed"})
         except (Order.DoesNotExist, PaymentType.DoesNotExist) as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)

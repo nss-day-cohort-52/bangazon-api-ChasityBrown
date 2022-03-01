@@ -1,3 +1,4 @@
+from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views as auth_token_views
 from django.urls import path, include
@@ -14,5 +15,8 @@ router.register(r'profile', views.ProfileView, 'profile')
 urlpatterns = [
     path('', include(router.urls)),
     path('login', auth_token_views.obtain_auth_token),
-    path('register', views.register_user)
+    path('register', views.register_user), 
+    path('api-auth', include('rest_framework.urls', namespace='rest_framework')),
+    path('admin/', admin.site.urls),
+    path('', include('bangazon_reports.urls')),
 ]
