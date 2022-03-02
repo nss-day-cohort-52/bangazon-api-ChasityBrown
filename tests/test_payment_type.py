@@ -5,6 +5,8 @@ from rest_framework.authtoken.models import Token
 from django.core.management import call_command
 from django.contrib.auth.models import User
 
+from bangazon_api.models.payment_type import PaymentType
+
 
 class PaymentTests(APITestCase):
     def setUp(self):
@@ -37,3 +39,16 @@ class PaymentTests(APITestCase):
         self.assertIsNotNone(response.data['id'])
         self.assertEqual(response.data["merchant_name"], data['merchant'])
         self.assertEqual(response.data["acct_number"], data['acctNumber'])
+
+    def test_delete_payment_type(self):
+        """
+        Ensure we can delete a payment type
+        """
+        payment_type = PaymentType()
+        payment_type.merchant_name = self.faker.credit_card_provider()
+        payment_type.acct_number = self.faker.credit_card_number()
+        payment_type.save()
+        response = self.client.delete(f'/api/payment-types/{payment_type.id}')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(f'/api/payment-types/{payment_type.id}')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

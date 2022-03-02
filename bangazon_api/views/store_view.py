@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from django.db.models import Q, Count
-
+from rest_framework.decorators import action
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from bangazon_api.models import Store
+from bangazon_api.models import Store, Favorite
 from bangazon_api.serializers import StoreSerializer, MessageSerializer, AddStoreSerializer
 
 
@@ -104,3 +104,23 @@ class StoreView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
         except Store.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(methods=['post'], detail=True)
+    def favorite(self, request, pk):
+        """Post for a customer to favorite a store"""
+        store = Store.objects.get(pk=pk)
+        Favorite.objects.create(
+            customer=request.auth.user,
+            store=store)
+        return Response({'message': 'Store favorited'}, status=status.HTTP_201_CREATED)
+    
+    @action(methods=['delete'], detail=True)
+    def unfavorite(self, request, pk):
+        """Delete for a customer to unfavorite a store"""
+        store = Store.objects.get(pk=pk)
+        favorite = Favorite.objects.get(
+            store = store,
+            customer=request.auth.user)
+        favorite.delete()
+        return Response({'message': 'Store unfavorited'}, status=status.HTTP_204_NO_CONTENT)
+        
