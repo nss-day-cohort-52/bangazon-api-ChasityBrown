@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bangazon Reports</title>
+  </head>
+  <body>
+    <h1>Fave Store by Customer</h1>
+
+    {% for fave in favestorebycustomer_list %}
+        <h2>{{ fave.customer }}</h2>
+        <ol>
+            
+            <ul>
+                Fave Store: {{ fave.store}}
+            </ul>
+        </ol>
+    {% endfor %}
+  </body>
+</html>
