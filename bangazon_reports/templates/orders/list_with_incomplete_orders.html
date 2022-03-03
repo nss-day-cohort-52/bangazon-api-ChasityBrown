@@ -6,14 +6,14 @@
     <title>Bangazon Reports</title>
   </head>
   <body>
-    <h1>Completed Orders</h1>
+    <h1>Incompleted Orders</h1>
 
-    {% for order in completedorder_list %}
+    {% for order in incompleteorder_list %}
         <h2>{{ order.id }}</h2>
         <ol>
             {{ order.user }}
             <ul>
-                Payment Type: {{ order.payment_type }}
+                Order Date: {{ order.created_on }}
             </ul>
             <ul>
                 Order Total: {{ order.total }}

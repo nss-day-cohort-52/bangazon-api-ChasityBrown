@@ -18,5 +18,4 @@ urlpatterns = [
     path('register', views.register_user), 
     path('api-auth', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path('', include('bangazon_reports.urls')),
 ]
