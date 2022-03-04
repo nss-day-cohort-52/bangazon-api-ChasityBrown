@@ -13,7 +13,7 @@ class PaymentTests(APITestCase):
         """
         Seed the database
         """
-        call_command('seed_db', user_count=1)
+        call_command('seed_db', user_count=2)
         self.user1 = User.objects.filter(store=None).first()
         self.token = Token.objects.get(user=self.user1)
 
@@ -37,8 +37,7 @@ class PaymentTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(response.data['id'])
-        self.assertEqual(response.data["merchant_name"], data['merchant'])
-        self.assertEqual(response.data["acct_number"], data['acctNumber'])
+        self.assertEqual(response.data['merchant_name'], data['merchant'])
 
     def test_delete_payment_type(self):
         """
@@ -47,8 +46,11 @@ class PaymentTests(APITestCase):
         payment_type = PaymentType()
         payment_type.merchant_name = self.faker.credit_card_provider()
         payment_type.acct_number = self.faker.credit_card_number()
+        payment_type.customer_id = self.user1.id
         payment_type.save()
+        
         response = self.client.delete(f'/api/payment-types/{payment_type.id}')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         response = self.client.get(f'/api/payment-types/{payment_type.id}')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
